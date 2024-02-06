@@ -10,16 +10,36 @@ namespace TresEnRaya
         {
 
             //Ajustes de ventana de consola
-            ventanaTamaño(22,50);
+            ventanaTamaño(25,55);
 
             int jugador = 2;
-            int jugadorActual = 2;
+            string [] jugadorActual = { "", "Jugador 1", "Jugador 2" };
             int ingreso = 0;
             bool validarIngreso = true;
-            
+            //bool validarNombres = true;
+            string respuestaNombres = "N";
+
             do
             {
+                Console.Write("  ¿Escribir nombres de los jugadores?\n  Si (y/yes)      No (Enter): ");
+                respuestaNombres = Console.ReadLine();
+                if (respuestaNombres.ToLower().Contains("y"))
+                {
+                    for(int i = 1; i < jugadorActual.Length; i++)
+                    {
+                        Console.Write("  ");
+                        Console.Write("\n  Nombre del jugador {0}: ", i);
+                        jugadorActual[i] = Console.ReadLine().ToString();
+                    } 
+                    break;
+                }
+                else 
+                    break;
+            }
+            while (true);
 
+            do
+            {
                 if(jugador == 2)
                 {
                     jugador = 1;
@@ -46,7 +66,7 @@ namespace TresEnRaya
                 #region
                 do
                 {
-                    Console.WriteLine("\n  Jugador {0}, por favor elija un casillero: ", jugador);
+                    Console.WriteLine("\n  {0}, por favor elija un casillero: ", jugadorActual[jugador]);
                     Console.Write("  ");
                     try
                     {
@@ -99,7 +119,8 @@ namespace TresEnRaya
                     if (!validarIngreso)
                     {
                         dibujarTablero();
-                        Console.WriteLine("\n  Ese numero ya esta ocupado por el jugador {0}\n  Ingresa otro valor", jugadorActual = (jugador == 1) ? 2 : 1);
+                        Console.WriteLine("\n  La casilla {1} ocupado por {0}\n  Ingresa otro número",
+                             (jugador == 1) ? jugadorActual[2] : jugadorActual[1], ingreso);
                     }
                 }
                 while (!validarIngreso);
