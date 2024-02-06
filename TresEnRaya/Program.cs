@@ -6,41 +6,40 @@ namespace TresEnRaya
 {
     internal class Program
     {
+        static string[] jugadorActual = { "", "Jugador 1", "Jugador 2" };
+        static string jugadorGanadorAnterior = jugadorActual[0];
+        static int ganador = 0;
+        static int jugador = 2;
+
         static void Main(string[] args)
         {
-
             //Ajustes de ventana de consola
             ventanaTamaño(25,55);
 
-            int jugador = 2;
-            string [] jugadorActual = { "", "Jugador 1", "Jugador 2" };
+            
             int ingreso = 0;
             bool validarIngreso = true;
             //bool validarNombres = true;
             string respuestaNombres = "N";
 
-            do
+
+            Console.Write("  ¿Escribir nombres de los jugadores?\n  Si (y/yes)      No (Enter): ");
+            respuestaNombres = Console.ReadLine();
+            Console.WriteLine("");
+            if (respuestaNombres.ToLower().Contains("y"))
             {
-                Console.Write("  ¿Escribir nombres de los jugadores?\n  Si (y/yes)      No (Enter): ");
-                respuestaNombres = Console.ReadLine();
-                if (respuestaNombres.ToLower().Contains("y"))
+                for(int i = 1; i < jugadorActual.Length; i++)
                 {
-                    for(int i = 1; i < jugadorActual.Length; i++)
-                    {
-                        Console.Write("  ");
-                        Console.Write("\n  Nombre del jugador {0}: ", i);
-                        jugadorActual[i] = Console.ReadLine().ToString();
-                    } 
-                    break;
-                }
-                else 
-                    break;
+                    Console.Write("  Nombre del jugador {0}: ", i);
+                    jugadorActual[i] = Console.ReadLine().ToString();
+                } 
             }
-            while (true);
+
 
             do
             {
-                if(jugador == 2)
+
+                if (jugador == 2)
                 {
                     jugador = 1;
                     logicaJuego(jugador, ingreso);
@@ -49,16 +48,50 @@ namespace TresEnRaya
                 {
                     jugador = 2;
                     logicaJuego(jugador, ingreso);
-                }  
-                
+                }
+
                 dibujarTablero();
-            
+
                 #region
                 char[] cadaSigno = { 'X', 'O' };
                 foreach (char signo in cadaSigno)
                 {
+                    for (int i = 0; i < tableroJuego.GetLength(0); i++)
+                    {
+                        if (tableroJuego[0,i] == signo && tableroJuego[1,i] == signo && tableroJuego[2,i] == signo)
+                        {
+                            ganador = (signo == 'X') ? 1 : 2;
+                        } 
+                        else if (tableroJuego[i, 0] == signo && tableroJuego[i, 1] == signo && tableroJuego[i, 2] == signo)
+                        {
+                            ganador = (signo == 'X') ? 1 : 2;
+                        }
+
+                    }
+
+                    if (tableroJuego[0, 0] == signo && tableroJuego[1, 1] == signo && tableroJuego[2, 2] == signo)
+                    {
+                        ganador = (signo == 'X') ? 1 : 2;
+                    }
+                    else if (tableroJuego[0, 2] == signo && tableroJuego[1, 1] == signo && tableroJuego[2, 0] == signo)
+                    {
+                        ganador = (signo == 'X') ? 1 : 2;
+                    }
 
                 }
+
+                if (ganador != 0)
+                {
+                    jugadorGanador(ganador);
+                    nuevoJuego();
+                    
+                }
+                else if (ganador == 0 && turnos == 10)
+                {
+                    jugadorGanador(ganador);
+                    nuevoJuego(); 
+                }
+
                 #endregion
 
 
@@ -103,7 +136,6 @@ namespace TresEnRaya
                                 if(ingreso == Convert.ToInt32(x.ToString()) && tableroJuego[i,j] == Convert.ToChar(x.ToString()))
                                 {
                                     validarIngreso = true;
-                                    Console.WriteLine(Convert.ToInt32(x.ToString()) + " == " + tableroJuego[i, j]);
                                     break;
                                 }
                                 else
@@ -127,13 +159,15 @@ namespace TresEnRaya
                 #endregion
             }
             while (true);
-
-
-
         }
 
         static char[,] tableroJuego = { { '1', '2', '3' }, { '4', '5', '6' }, { '7', '8', '9' } };
+        static char[,] reset = { { '1', '2', '3' }, { '4', '5', '6' }, { '7', '8', '9' } };
 
+        static int turnos = 0;
+        static int rondas = 1;
+
+        //Centrar texto en pantalla
         public static void centrarTexto(string texto)
         {
             int anchoVentana = Console.WindowWidth;
@@ -158,7 +192,12 @@ namespace TresEnRaya
             Console.Clear();
             Console.WriteLine("");
             centrarTexto("Juego 3 en Raya\n\n");
-            centrarTexto("Ronda: " + 1 + "          Ganador Anterior: " + "Jeff\n\n");
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Black;
+            
+            string gui = "Ronda: " + rondas + "          Ganador Anterior: " + jugadorGanadorAnterior;
+            Console.WriteLine((new string(' ', (ventana - gui.Length)/2) + gui) + new string(' ', (ventana - gui.Length+1) / 2));
+            Console.ResetColor();
 
 
             centrarTexto("._________________.\n");
@@ -176,6 +215,7 @@ namespace TresEnRaya
                 centrarTexto("|_____|_____|_____|\n");
             }
             Console.WriteLine("");
+            turnos++;
         }
 
 
@@ -232,5 +272,42 @@ namespace TresEnRaya
             Console.WindowWidth = anchoVentana;
         }
 
+
+        //Declarar ganador
+        public static void jugadorGanador(int jugador)
+        {
+            centrarTexto("!Hay ganador!\n");
+            jugadorGanadorAnterior = jugadorActual[jugador];
+            Console.BackgroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.WriteLine("\n  Ha ganado "+ (jugadorActual[jugador])+new string(' ', Console.WindowWidth)+"\n\n");
+            Console.ResetColor();
+            ganador = 0;
+        }
+
+        public static void nuevoJuego()
+        {
+            rondas++;
+            Array.Copy(reset, tableroJuego, reset.Length);
+            string nuevo = "N";
+            if(turnos == 10)
+            {
+                centrarTexto("¡Empate!\n\n");
+            }
+            Console.Write("  ¿Quieres jugar de nuevo?\n");
+            Console.Write("  Si (y)      No (Enter)\n");
+            Console.Write("  ");
+            nuevo = Console.ReadLine();
+            
+            if (nuevo.Contains("y"))
+            {
+                turnos = 0;
+                dibujarTablero();
+            } 
+            else
+            {
+                Environment.Exit(0);
+            }
+        }
     }
 }
