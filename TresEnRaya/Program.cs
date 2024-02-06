@@ -8,13 +8,9 @@ namespace TresEnRaya
     {
         static void Main(string[] args)
         {
-            
-            //Ajustes de ventana de consola
-            const int anchoVentana = 50;
-            const int altoVentana = 25;
 
-            Console.WindowHeight = altoVentana;
-            Console.WindowWidth = anchoVentana;
+            //Ajustes de ventana de consola
+            ventanaTamaño(22,50);
 
             int jugador = 2;
             int jugadorActual = 2;
@@ -158,6 +154,7 @@ namespace TresEnRaya
                 Console.Write("  |\n");
                 centrarTexto("|_____|_____|_____|\n");
             }
+            Console.WriteLine("");
         }
 
 
@@ -206,5 +203,13 @@ namespace TresEnRaya
                 default: break;
             }
         }
+
+        //Tamaño de la ventana
+        public static void ventanaTamaño(int altoVentana, int anchoVentana)
+        {
+            Console.WindowHeight = altoVentana;
+            Console.WindowWidth = anchoVentana;
+        }
+
     }
 }
